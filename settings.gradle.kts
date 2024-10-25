@@ -21,4 +21,5 @@ dependencyResolutionManagement {
 
 rootProject.name = "OpenGLES"
 include(":app")
- 
+include(":desktop")
+include(":common")
