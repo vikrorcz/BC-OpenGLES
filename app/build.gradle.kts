@@ -50,6 +50,9 @@ android {
 }
 
 dependencies {
+    implementation(project(":common"))
+    implementation(fileTree(mapOf("dir" to "common", "includes" to listOf("*.jar"))))
+
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
