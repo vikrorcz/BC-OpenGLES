@@ -3,6 +3,8 @@ package com.bura.desktop
 import com.bura.common.engine.Engine
 import com.bura.common.engine.Engine.Companion.gles20
 import com.bura.common.engine.MyRenderer
+import com.bura.common.util.Constants
+import com.bura.common.util.Matrix4f
 import com.bura.desktop.util.LwjglGles20
 import org.lwjgl.glfw.Callbacks
 import org.lwjgl.glfw.GLFW
@@ -12,6 +14,7 @@ import org.lwjgl.opengles.GLES
 import org.lwjgl.system.Configuration
 import org.lwjgl.system.MemoryStack
 import org.lwjgl.system.MemoryUtil
+import kotlin.math.tan
 
 internal class MyWindow {
 
@@ -88,10 +91,33 @@ internal class MyWindow {
 
         gles20.glViewport(0, 0, screenWidthPixel, screenHeightPixel)
 
+        val ratio = screenWidthPixel.toFloat() / screenHeightPixel
+        engine.screenWidthPixel = screenWidthPixel
+        engine.screenHeightPixel = screenHeightPixel
+
         myRenderer = MyRenderer(engine)
+
+        val fov = engine.camera.fov // set the desired FOV angle in degrees
+        var top: Float = tan(Math.toRadians((fov / 2.0f).toDouble())).toFloat() * 1f
+        var bottom = -top
+        var right = top * ratio
+        var left = -right
+
+        Matrix4f.frustumM(engine.projectionMatrix, left, right, bottom, top, Constants.CAMERA_NEAR, Constants.CAMERA_FAR)
 
         GLFW.glfwSetFramebufferSizeCallback(window) { _: Long, width: Int, height: Int ->
             gles20.glViewport(0, 0, width, height)
+
+            val changedRatio: Float = width.toFloat() / height
+
+            top = tan(Math.toRadians((fov / 2.0f).toDouble())).toFloat() * 1f
+            bottom = -top
+            right = top * changedRatio
+            left = -right
+
+            engine.screenWidthPixel = width
+            engine.screenHeightPixel = height
+            Matrix4f.frustumM(engine.projectionMatrix, left, right, bottom, top, Constants.CAMERA_NEAR, Constants.CAMERA_FAR)
         }
     }
 
