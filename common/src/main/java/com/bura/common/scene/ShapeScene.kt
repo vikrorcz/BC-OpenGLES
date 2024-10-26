@@ -21,7 +21,9 @@ class ShapeScene(val engine: Engine): Scene() {
 
     override fun draw() {
         shapeArray.forEach { shape ->
+            engine.matrixUtil.updateMatrix(shape)
             shape.draw()
+            engine.matrixUtil.restoreMatrix()
         }
     }
 
@@ -30,6 +32,8 @@ class ShapeScene(val engine: Engine): Scene() {
     }
 
     override fun updateLogic() {
-
+        val time: Long = System.currentTimeMillis() % 16000L
+        val angle = 0.090f * (time.toInt())
+        triangle.rotationZ = angle
     }
 }

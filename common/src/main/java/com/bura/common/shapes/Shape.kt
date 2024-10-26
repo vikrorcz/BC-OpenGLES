@@ -10,6 +10,19 @@ abstract class Shape(
     open var z: Float,
     open var scale: Float,
 ) {
+    open var initialX = 0f
+    open var initialY = 0f
+    open var initialZ = 0f
+    open var rotationX = 0f // In degrees
+    open var rotationY = 0f // In degrees
+    open var rotationZ = 0f // In degrees
+    open var pivotX = 0f
+    open var pivotY = 0f
+    open var pivotZ = 0f
+    open var rotationMatrix = FloatArray(16)
+    open var mTempRotationMatrix = FloatArray(16)
+    open var mModelMatrix = FloatArray(16)
+    open var mTempMatrix = FloatArray(16)
     open var color: FloatArray = floatArrayOf(1.0f, 1.0f, 1.0f, 1.0f) // Always pass in the color in this number format: 1.0f (not 1f)
     protected open var vertexData: FloatBuffer? = null
     protected open var vertexCount = 0
