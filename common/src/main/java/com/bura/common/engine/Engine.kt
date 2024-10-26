@@ -5,6 +5,7 @@ import com.bura.common.model.Instance
 import com.bura.common.model.Shader
 import com.bura.common.scene.ShapeScene
 import com.bura.common.util.GLES20
+import com.bura.common.util.MatrixUtil
 import com.bura.common.util.ShaderUtil
 
 class Engine(
@@ -25,6 +26,7 @@ class Engine(
     val camera = Camera()
     val instance = Instance(this, shader)
     val scene = ShapeScene(this, instance)
+    val matrixUtil = MatrixUtil(this)
 
     var screenWidthPixel = 0
     var screenHeightPixel = 0

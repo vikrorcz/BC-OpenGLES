@@ -29,6 +29,7 @@ class MyRenderer(
 
         Matrix4f.multiplyMM(engine.vPMatrix, engine.projectionMatrix, engine.viewMatrix)
         engine.scene.draw()
+        engine.scene.updateLogic()
 
         gles20.glFinish()
     }
