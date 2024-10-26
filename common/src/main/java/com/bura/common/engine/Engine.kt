@@ -1,7 +1,9 @@
 package com.bura.common.engine
 
 import com.bura.common.model.Camera
+import com.bura.common.model.Instance
 import com.bura.common.model.Shader
+import com.bura.common.scene.ShapeScene
 import com.bura.common.util.GLES20
 import com.bura.common.util.ShaderUtil
 
@@ -21,6 +23,8 @@ class Engine(
     )
 
     val camera = Camera()
+    val instance = Instance(this, shader)
+    val scene = ShapeScene(this, instance)
 
     var screenWidthPixel = 0
     var screenHeightPixel = 0
