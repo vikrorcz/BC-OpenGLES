@@ -8,7 +8,7 @@ abstract class Shape(
     open var x: Float,
     open var y: Float,
     open var z: Float,
-    open var scale: Float,
+    open var scale: Float = 1.0f,
 ) {
     open var initialX = 0f
     open var initialY = 0f

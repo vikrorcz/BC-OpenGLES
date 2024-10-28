@@ -7,6 +7,7 @@ import com.bura.common.engine.MyRenderer
 import com.bura.common.util.Constants
 import com.bura.common.util.Matrix4f
 import com.bura.opengles.util.AndroidGles20
+import com.bura.opengles.util.AndroidTextureUtil
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 import kotlin.math.tan
@@ -16,7 +17,10 @@ private lateinit var myRenderer: MyRenderer
 
 class MyRenderer :  GLSurfaceView.Renderer {
     override fun onSurfaceCreated(unused: GL10?, eglConfig: EGLConfig?) {
-        engine = Engine(deviceGles20 = AndroidGles20())
+        engine = Engine(
+            deviceGles20 = AndroidGles20(),
+            textureUtil = AndroidTextureUtil(),
+        )
         myRenderer = MyRenderer(engine)
     }
 
