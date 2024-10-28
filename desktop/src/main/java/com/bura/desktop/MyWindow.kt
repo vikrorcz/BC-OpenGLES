@@ -6,6 +6,7 @@ import com.bura.common.engine.MyRenderer
 import com.bura.common.util.Constants
 import com.bura.common.util.Matrix4f
 import com.bura.desktop.util.LwjglGles20
+import com.bura.desktop.util.LwjglTextureUtil
 import org.lwjgl.glfw.Callbacks
 import org.lwjgl.glfw.GLFW
 import org.lwjgl.glfw.GLFWErrorCallback
@@ -87,6 +88,7 @@ internal class MyWindow {
     private fun initializeEngine() {
         engine = Engine(
             deviceGles20 = LwjglGles20(),
+            textureUtil = LwjglTextureUtil(),
         )
 
         gles20.glViewport(0, 0, screenWidthPixel, screenHeightPixel)

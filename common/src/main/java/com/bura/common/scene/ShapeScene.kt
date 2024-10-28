@@ -20,8 +20,15 @@ class ShapeScene(val engine: Engine): Scene() {
         color = floatArrayOf(0.0f, 1.0f, 0.0f, 1.0f)
     }
 
+    private val texture = engine.instance.texture.clone().apply {
+        scale = 0.5f
+        x = 2f
+        y = 0f
+        z = 0f
+    }
+
     init {
-        shapeArray = mutableListOf(triangle, rectangle)
+        shapeArray = mutableListOf(triangle, rectangle, texture)
 
         // Move the camera up a little so we don't clip with the objects
         engine.camera.eyeZ = 3f
@@ -44,5 +51,6 @@ class ShapeScene(val engine: Engine): Scene() {
         val angle = 0.090f * (time.toInt())
         triangle.rotationZ = angle
         rectangle.rotationX = angle
+        texture.rotationY = angle
     }
 }
