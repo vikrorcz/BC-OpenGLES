@@ -1,6 +1,6 @@
 package com.bura.common.util
 
-class Constants {
+class   Constants {
     companion object {
 
         // Shader attributes
@@ -18,6 +18,11 @@ class Constants {
         const val VERTEX_STRIDE = COORDS_PER_VERTEX * 4
         const val TEXTURE_STRIDE = COORDS_PER_TEXTURE_VERTEX * 4
         const val BYTES_PER_FLOAT = 4
+
+        var defaultTextureColorRed = 0.0f
+        var defaultTextureColorGreen = 0.0f
+        var defaultTextureColorBlue = 0.0f
+        var defaultTextureColorAlpha = 1.0f
 
         // Camera settings
         const val CAMERA_NEAR = 1.0f
