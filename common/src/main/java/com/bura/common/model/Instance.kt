@@ -4,6 +4,7 @@ import com.bura.common.engine.Engine
 import com.bura.common.shapes.Rectangle
 import com.bura.common.shapes.Texture
 import com.bura.common.shapes.Triangle
+import com.bura.common.util.TextureUtil
 
 
 class Instance(
@@ -31,5 +32,11 @@ class Instance(
         y = 0.0f,
         z = 0.0f,
         resourceId = 0,
+    )
+
+    val terrain = engine.objLoader.loadModel(
+        objPath = "models/terrain.obj",
+        texture = TextureUtil.getTextureIdByName("grass.jpg"),
+        shaderType = engine.shader.texture,
     )
 }
