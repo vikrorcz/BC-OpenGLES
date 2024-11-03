@@ -6,11 +6,15 @@ class   Constants {
         // Shader attributes
         const val A_POSITION = "a_Position"
         const val A_TEXTURE = "a_TexCoord"
+        const val A_NORMAL = "a_Normal"
 
         // Shader uniforms
         const val U_COLOR = "u_Color"
         const val U_MATRIX = "u_Matrix"
         const val U_TEXTURE = "u_TexCoord"
+        const val U_MODEL_MATRIX = "u_ModelMatrix"
+        const val U_CAMERA_POSITION = "u_CameraPosition"
+        const val U_LIGHT_POSITION = "u_LightPosition"
 
         // Shader constants
         const val COORDS_PER_TEXTURE_VERTEX = 2
@@ -23,6 +27,8 @@ class   Constants {
         var defaultTextureColorGreen = 0.0f
         var defaultTextureColorBlue = 0.0f
         var defaultTextureColorAlpha = 1.0f
+
+        var lightPosition = floatArrayOf(0.0f, 0.0f, 0.0f)
 
         // Camera settings
         const val CAMERA_NEAR = 1.0f
