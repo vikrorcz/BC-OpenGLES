@@ -1,7 +1,9 @@
 package com.bura.common.scene
 
 import com.bura.common.engine.Engine
+import com.bura.common.engine.Engine.Companion.gles20
 import com.bura.common.shapes.Shape
+import com.bura.common.util.GLES20
 
 class TakeOffScene(val engine: Engine): Scene() {
 
@@ -16,7 +18,14 @@ class TakeOffScene(val engine: Engine): Scene() {
     override fun draw() {
         shapeArray.forEach { shape ->
             engine.matrixUtil.updateMatrix(shape)
+
+            gles20.glEnable(GLES20.GL_BLEND)
+            gles20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA)
+
             shape.draw()
+
+            gles20.glDisable(GLES20.GL_BLEND)
+
             engine.matrixUtil.restoreMatrix()
         }
     }
