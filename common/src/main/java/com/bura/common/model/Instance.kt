@@ -39,4 +39,22 @@ class Instance(
         texture = TextureUtil.getTextureIdByName("grass.jpg"),
         shaderType = engine.shader.texture,
     )
+
+    val pine = engine.objLoader.loadModel(
+        objPath = "models/pine.obj",
+        texture = TextureUtil.getTextureIdByName("pine.png"),
+        shaderType = engine.shader.texture,
+    )
+
+    val rock = engine.objLoader.loadModel(
+        objPath =  "models/rock.obj",
+        texture = TextureUtil.getTextureIdByName("rock.jpg"),
+        shaderType = engine.shader.texture,
+    )
+
+    val bush = engine.objLoader.loadModel(
+        objPath =  "models/bush.obj",
+        texture = TextureUtil.getTextureIdByName("bush.png"),
+        shaderType = engine.shader.texture,
+    )
 }

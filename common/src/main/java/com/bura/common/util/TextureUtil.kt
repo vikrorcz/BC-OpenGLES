@@ -10,6 +10,9 @@ interface TextureUtil {
 
         private val textureLocation = listOf(
             "${path}grass.jpg",
+            "${path}pine.png",
+            "${path}rock.jpg",
+            "${path}bush.png",
         )
 
         private val textures: List<Texture> = buildList {
