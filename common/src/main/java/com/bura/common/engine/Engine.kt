@@ -26,6 +26,7 @@ class Engine(
     val shader = Shader(
         colorProgram = ShaderUtil.createProgram("shaders/color"),
         textureProgram = ShaderUtil.createProgram("shaders/texture"),
+        skyBoxProgram = ShaderUtil.createProgram("shaders/skybox"),
     )
 
     val objLoader = ObjLoader(this)
