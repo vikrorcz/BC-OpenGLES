@@ -12,6 +12,8 @@ class TakeOffScene(val engine: Engine): Scene() {
     private val misc = createMiscShapes()
 
     init {
+        lightPosition = floatArrayOf(0.0f, 400.0f, 0.0f)
+
         shapeArray = mutableListOf(skyBox, terrain)
         shapeArray.addAll(misc)
     }
