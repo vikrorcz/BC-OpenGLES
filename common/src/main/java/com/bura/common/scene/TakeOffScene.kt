@@ -8,10 +8,11 @@ import com.bura.common.util.GLES20
 class TakeOffScene(val engine: Engine): Scene() {
 
     private val terrain = engine.instance.terrain.clone().apply { scale = 80f; y = -10.0f }
+    private val skyBox = engine.instance.takeOffSkyBox.clone().apply { scale = 8000f }
     private val misc = createMiscShapes()
 
     init {
-        shapeArray = mutableListOf(terrain)
+        shapeArray = mutableListOf(skyBox, terrain)
         shapeArray.addAll(misc)
     }
 
@@ -35,7 +36,9 @@ class TakeOffScene(val engine: Engine): Scene() {
     }
 
     override fun updateLogic() {
-
+        skyBox.x = engine.camera.x
+        skyBox.y = engine.camera.y
+        skyBox.z = engine.camera.z
     }
 
     private fun createMiscShapes(): MutableList<Shape> = mutableListOf(

@@ -57,4 +57,10 @@ class Instance(
         texture = TextureUtil.getTextureIdByName("bush.png"),
         shaderType = engine.shader.texture,
     )
+
+    val takeOffSkyBox = engine.objLoader.loadModel(
+        objPath = "models/cube.obj",
+        texture = TextureUtil.getTextureIdByName("skybox1.png"),
+        shaderType = engine.shader.skybox,
+    )
 }
