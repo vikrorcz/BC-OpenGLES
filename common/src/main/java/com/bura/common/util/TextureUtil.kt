@@ -13,6 +13,7 @@ interface TextureUtil {
             "${path}pine.png",
             "${path}rock.jpg",
             "${path}bush.png",
+            "${path}skybox1.png",
         )
 
         private val textures: List<Texture> = buildList {
