@@ -35,6 +35,7 @@ class Obj(
 
         when (shaderType) {
             is Shader.Texture -> renderWithTextureShader(shaderType)
+            is Shader.Skybox -> renderWithSkyboxShader(shaderType)
         }
 
         gles20.glUseProgram(0)
@@ -42,6 +43,37 @@ class Obj(
 
 
     private fun renderWithTextureShader(shaderType: Shader.Texture) {
+        gles20.glUniform1i(shaderType.uTextureHandle, texture)
+        gles20.glUniform4fv(shaderType.uColorHandle, color)
+        gles20.glUniformMatrix4fv(shaderType.uMatrixHandle,false, engine.vPMatrix)
+
+        vertexData?.let {
+            gles20.glVertexAttribPointer(
+                shaderType.aPositionHandle, Constants.COORDS_PER_VERTEX,
+                GLES20.GL_FLOAT, false, 0, it
+            )
+        }
+
+        gles20.glVertexAttribPointer(
+            shaderType.aTextureHandle, Constants.COORDS_PER_TEXTURE_VERTEX,
+            GLES20.GL_FLOAT, false, 0, textureData
+        )
+
+        gles20.glEnableVertexAttribArray(shaderType.aPositionHandle)
+        gles20.glEnableVertexAttribArray(shaderType.aTextureHandle)
+
+        gles20.glDrawElements(
+            GLES20.GL_TRIANGLES,
+            indices.size,
+            GLES20.GL_UNSIGNED_SHORT,
+            drawListData,
+        )
+
+        gles20.glDisableVertexAttribArray(shaderType.aPositionHandle)
+        gles20.glDisableVertexAttribArray(shaderType.aTextureHandle)
+    }
+
+    private fun renderWithSkyboxShader(shaderType: Shader.Skybox) {
         gles20.glUniform1i(shaderType.uTextureHandle, texture)
         gles20.glUniform4fv(shaderType.uColorHandle, color)
         gles20.glUniformMatrix4fv(shaderType.uMatrixHandle,false, engine.vPMatrix)
