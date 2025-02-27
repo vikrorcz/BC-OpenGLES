@@ -31,11 +31,17 @@ class Shader(
 
     val skybox = Skybox(
         program = skyBoxProgram,
-        aPositionHandle = Engine.gles20.glGetAttribLocation(skyBoxProgram, Constants.A_POSITION),
-        uMatrixHandle = Engine.gles20.glGetUniformLocation(skyBoxProgram, Constants.U_MATRIX),
-        uColorHandle = Engine.gles20.glGetUniformLocation(skyBoxProgram, Constants.U_COLOR),
         uTextureHandle = Engine.gles20.glGetUniformLocation(skyBoxProgram, Constants.U_TEXTURE),
+        aPositionHandle = Engine.gles20.glGetAttribLocation(skyBoxProgram, Constants.A_POSITION),
         aTextureHandle = Engine.gles20.glGetAttribLocation(skyBoxProgram, Constants.A_TEXTURE),
+        aNormalHandle = Engine.gles20.glGetAttribLocation(skyBoxProgram, Constants.A_NORMAL),
+        uMatrixHandle = Engine.gles20.glGetUniformLocation(skyBoxProgram, Constants.U_MATRIX),
+        uModelMatrixHandle = Engine.gles20.glGetUniformLocation(skyBoxProgram, Constants.U_MODEL_MATRIX),
+        uCameraPositionHandle = Engine.gles20.glGetUniformLocation(skyBoxProgram, Constants.U_CAMERA_POSITION),
+        uColorHandle = Engine.gles20.glGetUniformLocation(skyBoxProgram, Constants.U_COLOR),
+        uLightPositionHandle = Engine.gles20.glGetUniformLocation(skyBoxProgram, Constants.U_LIGHT_POSITION),
+        uScreenWidthHandle = Engine.gles20.glGetUniformLocation(skyBoxProgram, Constants.U_SCREEN_WIDTH),
+        uScreenHeightHandle = Engine.gles20.glGetUniformLocation(skyBoxProgram, Constants.U_SCREEN_HEIGHT),
     )
 
     val water = Water(
@@ -82,8 +88,14 @@ class Shader(
         var uTextureHandle: Int,
         var aPositionHandle: Int,
         var aTextureHandle: Int,
+        var aNormalHandle: Int,
         var uMatrixHandle: Int,
+        var uModelMatrixHandle: Int,
+        var uCameraPositionHandle: Int,
         var uColorHandle: Int,
+        var uScreenWidthHandle: Int,
+        var uScreenHeightHandle: Int,
+        var uLightPositionHandle: Int,
     ): Type
 
     data class Water(

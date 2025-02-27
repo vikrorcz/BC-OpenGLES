@@ -24,6 +24,8 @@ class MyRenderer(
         engine.speedMultiplier = engine.deltaTime / targetFrameTime
         engine.totalTime += engine.deltaTime / 1000.0f
 
+        engine.fpsCounter.logFrame()
+
         gles20.glClear(GLES20.GL_COLOR_BUFFER_BIT or GLES20.GL_DEPTH_BUFFER_BIT)
 
         gles20.glEnable(GLES20.GL_DEPTH_TEST)

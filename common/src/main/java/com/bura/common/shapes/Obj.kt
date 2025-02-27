@@ -94,8 +94,20 @@ class Obj(
 
     private fun renderWithSkyboxShader(shaderType: Shader.Skybox) {
         gles20.glUniform1i(shaderType.uTextureHandle, texture)
+        gles20.glUniform1f(shaderType.uScreenWidthHandle, engine.screenWidthPixel.toFloat())
+        gles20.glUniform1f(shaderType.uScreenHeightHandle, engine.screenHeightPixel.toFloat())
         gles20.glUniform4fv(shaderType.uColorHandle, color)
+        gles20.glUniform3fv(shaderType.uLightPositionHandle, engine.scene.lightPosition)
         gles20.glUniformMatrix4fv(shaderType.uMatrixHandle,false, engine.vPMatrix)
+        gles20.glUniformMatrix4fv(shaderType.uModelMatrixHandle, false, mModelMatrix)
+        gles20.glUniform3fv(shaderType.uCameraPositionHandle, floatArrayOf(engine.camera.eyeX, engine.camera.eyeY, engine.camera.eyeZ))
+
+        vertexData?.let {
+            gles20.glVertexAttribPointer(
+                shaderType.aPositionHandle, Constants.COORDS_PER_VERTEX,
+                GLES20.GL_FLOAT, false, 0, it
+            )
+        }
 
         vertexData?.let {
             gles20.glVertexAttribPointer(
@@ -109,8 +121,14 @@ class Obj(
             GLES20.GL_FLOAT, false, 0, textureData
         )
 
+        gles20.glVertexAttribPointer(
+            shaderType.aNormalHandle, Constants.COORDS_PER_VERTEX,
+            GLES20.GL_FLOAT, false, 0, normalData
+        )
+
         gles20.glEnableVertexAttribArray(shaderType.aPositionHandle)
         gles20.glEnableVertexAttribArray(shaderType.aTextureHandle)
+        gles20.glEnableVertexAttribArray(shaderType.aNormalHandle)
 
         gles20.glDrawElements(
             GLES20.GL_TRIANGLES,
@@ -121,6 +139,7 @@ class Obj(
 
         gles20.glDisableVertexAttribArray(shaderType.aPositionHandle)
         gles20.glDisableVertexAttribArray(shaderType.aTextureHandle)
+        gles20.glDisableVertexAttribArray(shaderType.aNormalHandle)
     }
 
     private fun renderWithWaterShader(shaderType: Shader.Water) {

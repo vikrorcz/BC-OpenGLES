@@ -7,6 +7,7 @@ import com.bura.common.scene.LandingScene
 import com.bura.common.scene.Scene
 import com.bura.common.scene.SpaceScene
 import com.bura.common.scene.TakeOffScene
+import com.bura.common.util.FPSCounter
 import com.bura.common.util.GLES20
 import com.bura.common.util.MatrixUtil
 import com.bura.common.util.ObjLoader
@@ -33,6 +34,7 @@ class Engine(
         waterProgram = ShaderUtil.createProgram("shaders/water"),
     )
 
+    val fpsCounter = FPSCounter()
     val objLoader = ObjLoader(this)
     val instance = Instance(this)
     val camera = Camera()
