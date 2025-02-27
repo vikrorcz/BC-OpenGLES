@@ -17,6 +17,8 @@ class Constants {
         const val U_LIGHT_POSITION = "u_LightPosition"
         const val U_TIME = "u_Time"
         const val U_WAVE_HEIGHT = "u_WaveHeight"
+        const val U_SCREEN_HEIGHT = "u_ScreenHeight"
+        const val U_SCREEN_WIDTH = "u_ScreenWidth"
 
         // Shader constants
         const val COORDS_PER_TEXTURE_VERTEX = 2
