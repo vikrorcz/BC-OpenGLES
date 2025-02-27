@@ -63,4 +63,10 @@ class Instance(
         texture = TextureUtil.getTextureIdByName("skybox1.png"),
         shaderType = engine.shader.skybox,
     )
+
+    val ship = engine.objLoader.loadModel(
+        objPath = "models/ship.obj",
+        texture = TextureUtil.getTextureIdByName("ship.png"),
+        shaderType = engine.shader.texture,
+    )
 }

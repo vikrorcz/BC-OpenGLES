@@ -4,17 +4,25 @@ import com.bura.common.engine.Engine
 import com.bura.common.engine.Engine.Companion.gles20
 import com.bura.common.shapes.Shape
 import com.bura.common.util.GLES20
+import com.bura.common.util.Matrix4f
+import kotlin.math.sqrt
 
 class TakeOffScene(val engine: Engine): Scene() {
 
     private val terrain = engine.instance.terrain.clone().apply { scale = 80f; y = -10.0f }
     private val skyBox = engine.instance.takeOffSkyBox.clone().apply { scale = 8000f }
     private val misc = createMiscShapes()
+    private val ship = engine.instance.ship.clone().apply {
+        scale = 25f
+        x = 16.53f
+        y = 0.0f
+        z = -582.77f
+        rotationY = 130f
+    }
 
     init {
-        lightPosition = floatArrayOf(0.0f, 400.0f, 0.0f)
-
-        shapeArray = mutableListOf(skyBox, terrain)
+        lightPosition = floatArrayOf(-3000.0f, 3000.0f, 4000.0f)
+        shapeArray = mutableListOf(skyBox, terrain, ship)
         shapeArray.addAll(misc)
     }
 
@@ -34,13 +42,114 @@ class TakeOffScene(val engine: Engine): Scene() {
     }
 
     override fun updateCamera() {
-
+        lookAtShip()
     }
 
+    private fun lookAtShip() {
+        val eyeX = -903.36f
+        val eyeY = 0.0f
+        val eyeZ = -476.37f
+
+        val lookAtX = ship.x
+        val lookAtY = ship.y
+        val lookAtZ = ship.z
+
+        Matrix4f.setLookAt(
+            engine.viewMatrix,
+            eyeX,
+            eyeY,
+            eyeZ,
+            lookAtX,
+            lookAtY,
+            lookAtZ,
+            0.0f,
+            1.0f,
+            0.0f,
+        )
+
+        engine.camera.setEye(eyeX, eyeY, eyeZ)
+        engine.camera.setLook(lookAtX, lookAtY, lookAtZ)
+    }
+
+    private var animationStarted = System.currentTimeMillis()
+    private var hoveringAnimationStartDelay = 3
+    private var idleAnimationStartDelay = 9
+    private var idleAnimationDuration = 8.5
+    private var hoveringAnimationDuration = 9
+    private var idleAnimationFinished = false
+    private var hoveringAnimationFinished = false
+    private var takeOffAnimationStartDelay = 11
+    private var changeSceneDelay = 20
+    private var velocityX: Float = 0.0f
+    private var velocityY: Float = 0.0f
+    private var velocityZ: Float = 0.0f
+    private var acceleration: Float = 0.0001f
+
     override fun updateLogic() {
-        skyBox.x = engine.camera.x
-        skyBox.y = engine.camera.y
-        skyBox.z = engine.camera.z
+        if (animationStarted + hoveringAnimationStartDelay * 1000 < System.currentTimeMillis() && !hoveringAnimationFinished) {
+            ship.rotationY += 0.5f * engine.speedMultiplier
+            ship.y += 0.01f * engine.speedMultiplier
+
+            ship.rotationZ += 0.08f * engine.speedMultiplier
+
+            if (animationStarted + 7 * 1000 < System.currentTimeMillis()) {
+                ship.rotationX += 0.16f * engine.speedMultiplier
+            } else {
+                ship.rotationX -= 0.1f * engine.speedMultiplier
+            }
+
+            velocityX += acceleration * 0.6f / 6.5f * 16.67f * 2.0f * engine.speedMultiplier
+            velocityY += acceleration * 0.9f / 6.5f * 16.67f * 2.0f * engine.speedMultiplier
+            velocityZ += acceleration * 1.8f / 6.5f * 16.67f * 2.0f * engine.speedMultiplier
+
+            ship.y += velocityY
+            ship.x += velocityX
+            ship.z += velocityZ
+
+            if (animationStarted + hoveringAnimationDuration * 1000 < System.currentTimeMillis()) {
+                hoveringAnimationFinished = true
+            }
+        }
+
+        if (animationStarted + idleAnimationStartDelay * 1000 < System.currentTimeMillis() && hoveringAnimationFinished) {
+            ship.rotationY -= 0.05f * engine.speedMultiplier
+            ship.rotationX += 0.08f * engine.speedMultiplier
+
+            ship.rotationZ += 0.015f * engine.speedMultiplier
+
+            velocityX += acceleration * 0.6f / 4.0f * 16.67f * 5.0f * engine.speedMultiplier
+            velocityY += acceleration * 0.9f / 4.0f * 16.67f * 5.0f * engine.speedMultiplier
+            velocityZ += acceleration * 1.0f / 4.0f * 16.67f * 5.0f * engine.speedMultiplier
+
+            ship.y += velocityY
+            ship.x += velocityX
+            ship.z += velocityZ
+
+            if (animationStarted + idleAnimationDuration * 1000 < System.currentTimeMillis()) {
+                idleAnimationFinished = true
+            }
+        }
+
+        if (animationStarted + takeOffAnimationStartDelay * 1000 < System.currentTimeMillis() && idleAnimationFinished) {
+            ship.rotationX += 0.01f * engine.speedMultiplier
+            ship.rotationZ += 0.01f * engine.speedMultiplier
+
+            velocityX -= acceleration * 0.05f * 16.67f * 5.0f * engine.speedMultiplier
+            velocityY += acceleration * 0.9f * 16.67f *  5.0f * engine.speedMultiplier
+            velocityZ += acceleration * 1.8f * 16.67f *  5.0f * engine.speedMultiplier
+
+            ship.y += velocityY
+            ship.x += velocityX
+            ship.z += velocityZ
+        }
+
+        if (animationStarted + changeSceneDelay * 1000 < System.currentTimeMillis() && idleAnimationFinished) {
+            //engine.scene = SpaceScene(engine, instance)
+        }
+
+        skyBox.x = engine.camera.eyeX
+        skyBox.y = engine.camera.eyeY
+        skyBox.z = engine.camera.eyeZ
     }
 
     private fun createMiscShapes(): MutableList<Shape> = mutableListOf(

@@ -37,6 +37,9 @@ class Engine(
 
     var screenWidthPixel = 0
     var screenHeightPixel = 0
+    var deltaTime = 0.0f
+    var totalTime = 0.0f
+    var speedMultiplier = 0.0f // Ensures the model moves approximately the same speed regardless of fps
 
     val vPMatrix = FloatArray(16)
     var projectionMatrix = FloatArray(16)
