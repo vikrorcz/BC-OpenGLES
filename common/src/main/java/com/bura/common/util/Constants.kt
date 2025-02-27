@@ -1,6 +1,6 @@
 package com.bura.common.util
 
-class   Constants {
+class Constants {
     companion object {
 
         // Shader attributes
@@ -15,6 +15,8 @@ class   Constants {
         const val U_MODEL_MATRIX = "u_ModelMatrix"
         const val U_CAMERA_POSITION = "u_CameraPosition"
         const val U_LIGHT_POSITION = "u_LightPosition"
+        const val U_TIME = "u_Time"
+        const val U_WAVE_HEIGHT = "u_WaveHeight"
 
         // Shader constants
         const val COORDS_PER_TEXTURE_VERTEX = 2
