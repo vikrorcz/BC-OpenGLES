@@ -148,7 +148,7 @@ class TakeOffScene(val engine: Engine): Scene() {
         }
 
         if (animationStarted + changeSceneDelay * 1000 < System.currentTimeMillis() && idleAnimationFinished) {
-            //engine.scene = SpaceScene(engine, instance)
+            engine.scene = SpaceScene(engine)
         }
 
         skyBox.x = engine.camera.x
