@@ -70,6 +70,12 @@ class Instance(
         shaderType = engine.shader.skybox,
     )
 
+    val landingSkyBox = engine.objLoader.loadModel(
+        objPath = "models/cube.obj",
+        texture = TextureUtil.getTextureIdByName("skybox3.jpg"),
+        shaderType = engine.shader.skybox,
+    )
+
     val ship = engine.objLoader.loadModel(
         objPath = "models/ship.obj",
         texture = TextureUtil.getTextureIdByName("ship.png"),
@@ -82,9 +88,27 @@ class Instance(
         shaderType = engine.shader.texture,
     )
 
-    val asteroid = engine. objLoader.loadModel(
+    val asteroid = engine.objLoader.loadModel(
         objPath =  "models/asteroid.obj",
         texture = TextureUtil.getTextureIdByName("asteroid.jpg"),
+        shaderType = engine.shader.texture,
+    )
+
+    val water = engine.objLoader.loadModel(
+        objPath =  "models/water.obj",
+        texture = TextureUtil.getTextureIdByName("water.jpg"),
+        shaderType = engine.shader.water,
+    )
+
+    val island = engine.objLoader.loadModel(
+        objPath = "models/island.obj",
+        texture = TextureUtil.getTextureIdByName("sand.jpg"),
+        shaderType = engine.shader.texture,
+    )
+
+    val palm = engine.objLoader.loadModel(
+        objPath = "models/palm.obj",
+        texture = TextureUtil.getTextureIdByName("palm.png"),
         shaderType = engine.shader.texture,
     )
 }

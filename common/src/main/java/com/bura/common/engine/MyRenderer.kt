@@ -22,6 +22,7 @@ class MyRenderer(
         engine.deltaTime = (time - lastTime).toFloat() / 1000000.0f
         lastTime = time
         engine.speedMultiplier = engine.deltaTime / targetFrameTime
+        engine.totalTime += engine.deltaTime / 1000.0f
 
         gles20.glClear(GLES20.GL_COLOR_BUFFER_BIT or GLES20.GL_DEPTH_BUFFER_BIT)
 

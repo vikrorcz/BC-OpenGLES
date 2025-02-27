@@ -156,7 +156,7 @@ class SpaceScene(val engine: Engine): Scene() {
             ship.x += 1.5f * engine.speedMultiplier
         }
         if (ship.x >= 2100f) {
-            //engine.scene = LandingScene(engine, instance)
+            engine.scene = LandingScene(engine)
         }
     }
 
