@@ -3,6 +3,7 @@ package com.bura.common.shapes
 import com.bura.common.engine.Engine
 import com.bura.common.engine.Engine.Companion.gles20
 import com.bura.common.model.Shader
+import com.bura.common.scene.LandingScene
 import com.bura.common.util.Constants
 import com.bura.common.util.GLES20
 import java.nio.FloatBuffer
@@ -36,6 +37,7 @@ class Obj(
         when (shaderType) {
             is Shader.Texture -> renderWithTextureShader(shaderType)
             is Shader.Skybox -> renderWithSkyboxShader(shaderType)
+            is Shader.Water -> renderWithWaterShader(shaderType)
         }
 
         gles20.glUseProgram(0)
@@ -119,6 +121,49 @@ class Obj(
 
         gles20.glDisableVertexAttribArray(shaderType.aPositionHandle)
         gles20.glDisableVertexAttribArray(shaderType.aTextureHandle)
+    }
+
+    private fun renderWithWaterShader(shaderType: Shader.Water) {
+        gles20.glUniform1i(shaderType.uTextureHandle, texture)
+        gles20.glUniform4fv(shaderType.uColorHandle, color)
+        gles20.glUniform3fv(shaderType.uLightPositionHandle, engine.scene.lightPosition)
+        gles20.glUniformMatrix4fv(shaderType.uMatrixHandle,false, engine.vPMatrix)
+        gles20.glUniformMatrix4fv(shaderType.uModelMatrixHandle, false, mModelMatrix)
+        gles20.glUniform3fv(shaderType.uCameraPositionHandle, floatArrayOf(engine.camera.eyeX, engine.camera.eyeY, engine.camera.eyeZ))
+        gles20.glUniform1f(shaderType.uTimeHandle, engine.totalTime)
+        gles20.glUniform1f(shaderType.uWaveHeightHandle, (engine.scene as LandingScene).waveHeightUniform)
+
+        vertexData?.let {
+            gles20.glVertexAttribPointer(
+                shaderType.aPositionHandle, Constants.COORDS_PER_VERTEX,
+                GLES20.GL_FLOAT, false, 0, it
+            )
+        }
+
+        gles20.glVertexAttribPointer(
+            shaderType.aTextureHandle, Constants.COORDS_PER_TEXTURE_VERTEX,
+            GLES20.GL_FLOAT, false, 0, textureData
+        )
+
+        gles20.glVertexAttribPointer(
+            shaderType.aNormalHandle, Constants.COORDS_PER_VERTEX,
+            GLES20.GL_FLOAT, false, 0, normalData
+        )
+
+        gles20.glEnableVertexAttribArray(shaderType.aPositionHandle)
+        gles20.glEnableVertexAttribArray(shaderType.aTextureHandle)
+        gles20.glEnableVertexAttribArray(shaderType.aNormalHandle)
+
+        gles20.glDrawElements(
+            GLES20.GL_TRIANGLES,
+            indices.size,
+            GLES20.GL_UNSIGNED_SHORT,
+            drawListData,
+        )
+
+        gles20.glDisableVertexAttribArray(shaderType.aPositionHandle)
+        gles20.glDisableVertexAttribArray(shaderType.aTextureHandle)
+        gles20.glDisableVertexAttribArray(shaderType.aNormalHandle)
     }
 
     fun clone(): Obj {

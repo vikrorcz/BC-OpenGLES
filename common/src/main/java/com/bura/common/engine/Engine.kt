@@ -3,6 +3,7 @@ package com.bura.common.engine
 import com.bura.common.model.Camera
 import com.bura.common.model.Instance
 import com.bura.common.model.Shader
+import com.bura.common.scene.LandingScene
 import com.bura.common.scene.Scene
 import com.bura.common.scene.SpaceScene
 import com.bura.common.scene.TakeOffScene
@@ -29,12 +30,13 @@ class Engine(
         colorProgram = ShaderUtil.createProgram("shaders/color"),
         textureProgram = ShaderUtil.createProgram("shaders/texture"),
         skyBoxProgram = ShaderUtil.createProgram("shaders/skybox"),
+        waterProgram = ShaderUtil.createProgram("shaders/water"),
     )
 
     val objLoader = ObjLoader(this)
     val instance = Instance(this)
     val camera = Camera()
-    var scene: Scene = SpaceScene(this)
+    var scene: Scene = TakeOffScene(this)
     val matrixUtil = MatrixUtil(this)
 
     var screenWidthPixel = 0
