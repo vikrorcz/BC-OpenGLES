@@ -14,7 +14,10 @@ interface TextureUtil {
             "${path}rock.jpg",
             "${path}bush.png",
             "${path}skybox1.png",
+            "${path}skybox2.png",
             "${path}ship.png",
+            "${path}saturn.jpg",
+            "${path}asteroid.jpg",
         )
 
         private val textures: List<Texture> = buildList {

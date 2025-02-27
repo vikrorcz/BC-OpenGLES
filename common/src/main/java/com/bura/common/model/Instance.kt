@@ -64,9 +64,27 @@ class Instance(
         shaderType = engine.shader.skybox,
     )
 
+    val spaceSkyBox = engine.objLoader.loadModel(
+        objPath = "models/cube.obj",
+        texture = TextureUtil.getTextureIdByName("skybox2.png"),
+        shaderType = engine.shader.skybox,
+    )
+
     val ship = engine.objLoader.loadModel(
         objPath = "models/ship.obj",
         texture = TextureUtil.getTextureIdByName("ship.png"),
+        shaderType = engine.shader.texture,
+    )
+
+    val saturn = engine.objLoader.loadModel(
+        objPath = "models/saturn.obj",
+        texture = TextureUtil.getTextureIdByName("saturn.jpg"),
+        shaderType = engine.shader.texture,
+    )
+
+    val asteroid = engine. objLoader.loadModel(
+        objPath =  "models/asteroid.obj",
+        texture = TextureUtil.getTextureIdByName("asteroid.jpg"),
         shaderType = engine.shader.texture,
     )
 }
