@@ -9,15 +9,16 @@ import kotlin.math.sqrt
 
 class TakeOffScene(val engine: Engine): Scene() {
 
-    private val terrain = engine.instance.terrain.clone().apply { scale = 80f; y = -10.0f }
-    private val skyBox = engine.instance.takeOffSkyBox.clone().apply { scale = 8000f }
-    private val misc = createMiscShapes()
+    private val terrain = engine.instance.terrain.clone().apply { scale = 80f; y = -10.0f; isAlwaysRendered = true }
+    private val skyBox = engine.instance.takeOffSkyBox.clone().apply { scale = 8000f; isAlwaysRendered = true }
+    private val misc = createMiscShapes().map { it.isAlwaysRendered = true; it }
     private val ship = engine.instance.ship.clone().apply {
         scale = 25f
         x = 16.53f
         y = 0.0f
         z = -582.77f
         rotationY = 130f
+        isAlwaysRendered = true
     }
 
     init {
@@ -28,16 +29,18 @@ class TakeOffScene(val engine: Engine): Scene() {
 
     override fun draw() {
         shapeArray.forEach { shape ->
-            engine.matrixUtil.updateMatrix(shape)
+            if (shape.isOnScreen()) {
+                engine.matrixUtil.updateMatrix(shape)
 
-            gles20.glEnable(GLES20.GL_BLEND)
-            gles20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA)
+                gles20.glEnable(GLES20.GL_BLEND)
+                gles20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA)
 
-            shape.draw()
+                shape.draw()
 
-            gles20.glDisable(GLES20.GL_BLEND)
+                gles20.glDisable(GLES20.GL_BLEND)
 
-            engine.matrixUtil.restoreMatrix()
+                engine.matrixUtil.restoreMatrix()
+            }
         }
     }
 
