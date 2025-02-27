@@ -13,8 +13,8 @@ import kotlin.random.Random
 class SpaceScene(val engine: Engine): Scene() {
 
     private val ship = engine.instance.ship.clone().apply { scale = 1.5f; x -= 1000f }
-    private val saturn = engine.instance.saturn.clone().apply { scale = 80f; z -= 1500f }
-    private val skyBox = engine.instance.spaceSkyBox.clone().apply { scale = 8000f }
+    private val saturn = engine.instance.saturn.clone().apply { scale = 80f; z -= 1500f; isAlwaysRendered = true}
+    private val skyBox = engine.instance.spaceSkyBox.clone().apply { scale = 8000f; isAlwaysRendered = true }
     private val asteroidsArray = mutableListOf<Shape>()
 
     init {
@@ -31,16 +31,18 @@ class SpaceScene(val engine: Engine): Scene() {
 
     override fun draw() {
         shapeArray.forEach { shape ->
-            engine.matrixUtil.updateMatrix(shape)
+            if (shape.isOnScreen()) {
+                engine.matrixUtil.updateMatrix(shape)
 
-            gles20.glEnable(GLES20.GL_BLEND)
-            gles20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA)
+                gles20.glEnable(GLES20.GL_BLEND)
+                gles20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA)
 
-            shape.draw()
+                shape.draw()
 
-            gles20.glDisable(GLES20.GL_BLEND)
+                gles20.glDisable(GLES20.GL_BLEND)
 
-            engine.matrixUtil.restoreMatrix()
+                engine.matrixUtil.restoreMatrix()
+            }
         }
     }
 
@@ -138,6 +140,10 @@ class SpaceScene(val engine: Engine): Scene() {
     }
 
     override fun updateLogic() {
+        skyBox.x = engine.camera.x
+        skyBox.y = engine.camera.y
+        skyBox.z = engine.camera.z
+
         asteroidsArray.forEachIndexed { index, shape ->
             shape.rotationX += (index * 0.01f).coerceIn(0.01f, 0.3f) * engine.speedMultiplier
             shape.rotationY += (index * 0.01f).coerceIn(0.01f, 0.3f) * engine.speedMultiplier
@@ -187,6 +193,7 @@ class SpaceScene(val engine: Engine): Scene() {
                 rotationX = random.nextFloat() * 360f
                 rotationY = random.nextFloat() * 360f
                 rotationZ = random.nextFloat() * 360f
+                renderDistance = 1500.0f
             }
             this.add(asteroid)
         }

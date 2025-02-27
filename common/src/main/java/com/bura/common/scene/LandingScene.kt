@@ -17,7 +17,7 @@ class LandingScene(val engine: Engine): Scene() {
     private val terrain = engine.instance.island.clone().apply { y = -200f; x = 260000f; scale = 300f }
     private val decorations = addDecorations()
     private val waterTileArray = mutableListOf<Shape>()
-    private val skyBox = engine.instance.landingSkyBox.clone().apply { scale = 100000f }
+    private val skyBox = engine.instance.landingSkyBox.clone().apply { scale = 100000f; isAlwaysRendered = true }
     private val rectangle = Rectangle(engine, 0f,-400f, 0f, 500f).apply { rotationX = 270f }
     private var sequence: Sequence = Sequence.PART_1
     private enum class Sequence { PART_1, PART_2, PART_3 }
@@ -46,24 +46,28 @@ class LandingScene(val engine: Engine): Scene() {
 
     override fun draw() {
         shapeArray.forEach { shape ->
-            engine.matrixUtil.updateMatrix(shape)
+            if (shape.isOnScreen()) {
+                engine.matrixUtil.updateMatrix(shape)
 
-            gles20.glEnable(GLES20.GL_BLEND)
-            gles20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA)
+                gles20.glEnable(GLES20.GL_BLEND)
+                gles20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA)
 
-            shape.draw()
+                shape.draw()
 
-            gles20.glDisable(GLES20.GL_BLEND)
+                gles20.glDisable(GLES20.GL_BLEND)
 
-            engine.matrixUtil.restoreMatrix()
+                engine.matrixUtil.restoreMatrix()
+            }
         }
 
         waterTileArray.forEach { shape ->
-            engine.matrixUtil.updateMatrix(shape)
+            if (shape.isOnScreen()) {
+                engine.matrixUtil.updateMatrix(shape)
 
-            shape.draw()
+                shape.draw()
 
-            engine.matrixUtil.restoreMatrix()
+                engine.matrixUtil.restoreMatrix()
+            }
         }
     }
     private var waveOffset = 5.0f
