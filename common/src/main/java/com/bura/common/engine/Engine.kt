@@ -3,6 +3,8 @@ package com.bura.common.engine
 import com.bura.common.model.Camera
 import com.bura.common.model.Instance
 import com.bura.common.model.Shader
+import com.bura.common.scene.Scene
+import com.bura.common.scene.SpaceScene
 import com.bura.common.scene.TakeOffScene
 import com.bura.common.util.GLES20
 import com.bura.common.util.MatrixUtil
@@ -32,7 +34,7 @@ class Engine(
     val objLoader = ObjLoader(this)
     val instance = Instance(this)
     val camera = Camera()
-    val scene = TakeOffScene(this)
+    var scene: Scene = SpaceScene(this)
     val matrixUtil = MatrixUtil(this)
 
     var screenWidthPixel = 0
