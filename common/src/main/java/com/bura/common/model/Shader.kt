@@ -7,6 +7,7 @@ class Shader(
     colorProgram: Int,
     textureProgram: Int,
     skyBoxProgram: Int,
+    waterProgram: Int,
 ) {
     val color = Color(
         program = colorProgram,
@@ -35,6 +36,21 @@ class Shader(
         uColorHandle = Engine.gles20.glGetUniformLocation(skyBoxProgram, Constants.U_COLOR),
         uTextureHandle = Engine.gles20.glGetUniformLocation(skyBoxProgram, Constants.U_TEXTURE),
         aTextureHandle = Engine.gles20.glGetAttribLocation(skyBoxProgram, Constants.A_TEXTURE),
+    )
+
+    val water = Water(
+        program = waterProgram,
+        uTimeHandle = Engine.gles20.glGetUniformLocation(waterProgram, Constants.U_TIME),
+        uTextureHandle = Engine.gles20.glGetUniformLocation(waterProgram, Constants.U_TEXTURE),
+        aPositionHandle = Engine.gles20.glGetAttribLocation(waterProgram, Constants.A_POSITION),
+        aTextureHandle = Engine.gles20.glGetAttribLocation(waterProgram, Constants.A_TEXTURE),
+        aNormalHandle = Engine.gles20.glGetAttribLocation(waterProgram, Constants.A_NORMAL),
+        uMatrixHandle = Engine.gles20.glGetUniformLocation(waterProgram, Constants.U_MATRIX),
+        uModelMatrixHandle = Engine.gles20.glGetUniformLocation(waterProgram, Constants.U_MODEL_MATRIX),
+        uCameraPositionHandle = Engine.gles20.glGetUniformLocation(waterProgram, Constants.U_CAMERA_POSITION),
+        uColorHandle = Engine.gles20.glGetUniformLocation(waterProgram, Constants.U_COLOR),
+        uLightPositionHandle = Engine.gles20.glGetUniformLocation(waterProgram, Constants.U_LIGHT_POSITION),
+        uWaveHeightHandle = Engine.gles20.glGetUniformLocation(waterProgram, Constants.U_WAVE_HEIGHT),
     )
 
     interface Type {
@@ -68,5 +84,20 @@ class Shader(
         var aTextureHandle: Int,
         var uMatrixHandle: Int,
         var uColorHandle: Int,
+    ): Type
+
+    data class Water(
+        override var program: Int,
+        var uTimeHandle: Int,
+        var uTextureHandle: Int,
+        var aPositionHandle: Int,
+        var aTextureHandle: Int,
+        var aNormalHandle: Int,
+        var uMatrixHandle: Int,
+        var uModelMatrixHandle: Int,
+        var uCameraPositionHandle: Int,
+        var uColorHandle: Int,
+        var uLightPositionHandle: Int,
+        var uWaveHeightHandle: Int,
     ): Type
 }
