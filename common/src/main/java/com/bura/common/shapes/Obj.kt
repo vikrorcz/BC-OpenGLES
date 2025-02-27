@@ -31,6 +31,39 @@ class Obj(
         Constants.defaultTextureColorAlpha,
     )
 
+    private val buffers = IntArray(3)
+    private var indexBufferHandle = 0
+
+    init {
+        initializeVBO()
+    }
+
+    // https://www.learnopengles.com/android-lesson-seven-an-introduction-to-vertex-buffer-objects-vbos/
+    private fun initializeVBO() {
+        gles20.glGenBuffers(3, buffers)
+
+        gles20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, buffers[0])
+        vertexData?.let {
+            gles20.glBufferData(GLES20.GL_ARRAY_BUFFER, it.capacity() * Constants.BYTES_PER_FLOAT, it, GLES20.GL_STATIC_DRAW)
+        }
+
+        gles20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, buffers[1])
+        gles20.glBufferData(GLES20.GL_ARRAY_BUFFER, textureData.capacity() * Constants.BYTES_PER_FLOAT, textureData, GLES20.GL_STATIC_DRAW)
+
+        gles20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, buffers[2])
+        gles20.glBufferData(GLES20.GL_ARRAY_BUFFER, normalData.capacity() * Constants.BYTES_PER_FLOAT, normalData, GLES20.GL_STATIC_DRAW)
+
+        val intArray = IntArray(1)
+        gles20.glGenBuffers(1, intArray)
+        indexBufferHandle = intArray[0]
+        gles20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, indexBufferHandle)
+
+        gles20.glBufferData(GLES20.GL_ELEMENT_ARRAY_BUFFER, indices.size * 2, drawListData, GLES20.GL_STATIC_DRAW)
+
+        gles20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, 0)
+        gles20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, 0)
+    }
+
     override fun draw() {
         gles20.glUseProgram(shaderType.program)
 
@@ -42,7 +75,6 @@ class Obj(
 
         gles20.glUseProgram(0)
     }
-
 
     private fun renderWithTextureShader(shaderType: Shader.Texture) {
         gles20.glUniform1i(shaderType.uTextureHandle, texture)
@@ -59,37 +91,32 @@ class Obj(
             )
         }
 
-        vertexData?.let {
-            gles20.glVertexAttribPointer(
-                shaderType.aPositionHandle, Constants.COORDS_PER_VERTEX,
-                GLES20.GL_FLOAT, false, 0, it
-            )
-        }
-
-        gles20.glVertexAttribPointer(
-            shaderType.aTextureHandle, Constants.COORDS_PER_TEXTURE_VERTEX,
-            GLES20.GL_FLOAT, false, 0, textureData
-        )
-
-        gles20.glVertexAttribPointer(
-            shaderType.aNormalHandle, Constants.COORDS_PER_VERTEX,
-            GLES20.GL_FLOAT, false, 0, normalData
-        )
-
+        gles20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, buffers[0])
         gles20.glEnableVertexAttribArray(shaderType.aPositionHandle)
-        gles20.glEnableVertexAttribArray(shaderType.aTextureHandle)
-        gles20.glEnableVertexAttribArray(shaderType.aNormalHandle)
+        gles20.glVertexAttribPointer(shaderType.aPositionHandle, Constants.COORDS_PER_VERTEX, GLES20.GL_FLOAT, false, 0, 0)
 
+        gles20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, buffers[1])
+        gles20.glEnableVertexAttribArray(shaderType.aTextureHandle)
+        gles20.glVertexAttribPointer(shaderType.aTextureHandle, Constants.COORDS_PER_TEXTURE_VERTEX, GLES20.GL_FLOAT, false, 0, 0)
+
+        gles20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, buffers[2])
+        gles20.glEnableVertexAttribArray(shaderType.aNormalHandle)
+        gles20.glVertexAttribPointer(shaderType.aNormalHandle, Constants.COORDS_PER_VERTEX, GLES20.GL_FLOAT, false, 0, 0)
+
+        gles20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, indexBufferHandle)
         gles20.glDrawElements(
             GLES20.GL_TRIANGLES,
             indices.size,
             GLES20.GL_UNSIGNED_SHORT,
-            drawListData,
+            0,
         )
 
         gles20.glDisableVertexAttribArray(shaderType.aPositionHandle)
         gles20.glDisableVertexAttribArray(shaderType.aTextureHandle)
         gles20.glDisableVertexAttribArray(shaderType.aNormalHandle)
+
+        gles20.glBindBuffer(GLES20.GL_ARRAY_BUFFER,0)
+        gles20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, 0)
     }
 
     private fun renderWithSkyboxShader(shaderType: Shader.Skybox) {
@@ -109,37 +136,32 @@ class Obj(
             )
         }
 
-        vertexData?.let {
-            gles20.glVertexAttribPointer(
-                shaderType.aPositionHandle, Constants.COORDS_PER_VERTEX,
-                GLES20.GL_FLOAT, false, 0, it
-            )
-        }
-
-        gles20.glVertexAttribPointer(
-            shaderType.aTextureHandle, Constants.COORDS_PER_TEXTURE_VERTEX,
-            GLES20.GL_FLOAT, false, 0, textureData
-        )
-
-        gles20.glVertexAttribPointer(
-            shaderType.aNormalHandle, Constants.COORDS_PER_VERTEX,
-            GLES20.GL_FLOAT, false, 0, normalData
-        )
-
+        gles20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, buffers[0])
         gles20.glEnableVertexAttribArray(shaderType.aPositionHandle)
-        gles20.glEnableVertexAttribArray(shaderType.aTextureHandle)
-        gles20.glEnableVertexAttribArray(shaderType.aNormalHandle)
+        gles20.glVertexAttribPointer(shaderType.aPositionHandle, Constants.COORDS_PER_VERTEX, GLES20.GL_FLOAT, false, 0, 0)
 
+        gles20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, buffers[1])
+        gles20.glEnableVertexAttribArray(shaderType.aTextureHandle)
+        gles20.glVertexAttribPointer(shaderType.aTextureHandle, Constants.COORDS_PER_TEXTURE_VERTEX, GLES20.GL_FLOAT, false, 0, 0)
+
+        gles20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, buffers[2])
+        gles20.glEnableVertexAttribArray(shaderType.aNormalHandle)
+        gles20.glVertexAttribPointer(shaderType.aNormalHandle, Constants.COORDS_PER_VERTEX, GLES20.GL_FLOAT, false, 0, 0)
+
+        gles20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, indexBufferHandle)
         gles20.glDrawElements(
             GLES20.GL_TRIANGLES,
             indices.size,
             GLES20.GL_UNSIGNED_SHORT,
-            drawListData,
+            0,
         )
 
         gles20.glDisableVertexAttribArray(shaderType.aPositionHandle)
         gles20.glDisableVertexAttribArray(shaderType.aTextureHandle)
         gles20.glDisableVertexAttribArray(shaderType.aNormalHandle)
+
+        gles20.glBindBuffer(GLES20.GL_ARRAY_BUFFER,0)
+        gles20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, 0)
     }
 
     private fun renderWithWaterShader(shaderType: Shader.Water) {
@@ -152,37 +174,32 @@ class Obj(
         gles20.glUniform1f(shaderType.uTimeHandle, engine.totalTime)
         gles20.glUniform1f(shaderType.uWaveHeightHandle, (engine.scene as LandingScene).waveHeightUniform)
 
-        vertexData?.let {
-            gles20.glVertexAttribPointer(
-                shaderType.aPositionHandle, Constants.COORDS_PER_VERTEX,
-                GLES20.GL_FLOAT, false, 0, it
-            )
-        }
-
-        gles20.glVertexAttribPointer(
-            shaderType.aTextureHandle, Constants.COORDS_PER_TEXTURE_VERTEX,
-            GLES20.GL_FLOAT, false, 0, textureData
-        )
-
-        gles20.glVertexAttribPointer(
-            shaderType.aNormalHandle, Constants.COORDS_PER_VERTEX,
-            GLES20.GL_FLOAT, false, 0, normalData
-        )
-
+        gles20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, buffers[0])
         gles20.glEnableVertexAttribArray(shaderType.aPositionHandle)
-        gles20.glEnableVertexAttribArray(shaderType.aTextureHandle)
-        gles20.glEnableVertexAttribArray(shaderType.aNormalHandle)
+        gles20.glVertexAttribPointer(shaderType.aPositionHandle, Constants.COORDS_PER_VERTEX, GLES20.GL_FLOAT, false, 0, 0)
 
+        gles20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, buffers[1])
+        gles20.glEnableVertexAttribArray(shaderType.aTextureHandle)
+        gles20.glVertexAttribPointer(shaderType.aTextureHandle, Constants.COORDS_PER_TEXTURE_VERTEX, GLES20.GL_FLOAT, false, 0, 0)
+
+        gles20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, buffers[2])
+        gles20.glEnableVertexAttribArray(shaderType.aNormalHandle)
+        gles20.glVertexAttribPointer(shaderType.aNormalHandle, Constants.COORDS_PER_VERTEX, GLES20.GL_FLOAT, false, 0, 0)
+
+        gles20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, indexBufferHandle)
         gles20.glDrawElements(
             GLES20.GL_TRIANGLES,
             indices.size,
             GLES20.GL_UNSIGNED_SHORT,
-            drawListData,
+            0,
         )
 
         gles20.glDisableVertexAttribArray(shaderType.aPositionHandle)
         gles20.glDisableVertexAttribArray(shaderType.aTextureHandle)
         gles20.glDisableVertexAttribArray(shaderType.aNormalHandle)
+
+        gles20.glBindBuffer(GLES20.GL_ARRAY_BUFFER,0)
+        gles20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, 0)
     }
 
     fun clone(): Obj {

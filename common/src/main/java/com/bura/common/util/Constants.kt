@@ -34,6 +34,12 @@ class Constants {
 
         var lightPosition = floatArrayOf(0.0f, 0.0f, 0.0f)
 
+        const val MAX_RENDER_DISTANCE = Float.MAX_VALUE
+        // Threshold for the fov, so that objects do not pop in
+        const val FOV_THRESHOLD = 5.0f
+        // Do not remove objects close to the back of the camera, serves as a hack for rendering water
+        const val DISTANCE_THRESHOLD = 3000.0f
+
         // Camera settings
         const val CAMERA_NEAR = 1.0f
         const val CAMERA_FAR = 1000.0f

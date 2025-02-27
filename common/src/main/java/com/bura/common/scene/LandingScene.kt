@@ -4,11 +4,13 @@ import com.bura.common.engine.Engine
 import com.bura.common.engine.Engine.Companion.gles20
 import com.bura.common.shapes.Rectangle
 import com.bura.common.shapes.Shape
+import com.bura.common.util.Constants
 import com.bura.common.util.GLES20
 import com.bura.common.util.Matrix4f
 import kotlin.math.abs
 import kotlin.math.cos
 import kotlin.math.sin
+import kotlin.math.sqrt
 
 class LandingScene(val engine: Engine): Scene() {
 
@@ -17,7 +19,7 @@ class LandingScene(val engine: Engine): Scene() {
     private val terrain = engine.instance.island.clone().apply { y = -200f; x = 260000f; scale = 300f }
     private val decorations = addDecorations()
     private val waterTileArray = mutableListOf<Shape>()
-    private val skyBox = engine.instance.landingSkyBox.clone().apply { scale = 100000f }
+    private val skyBox = engine.instance.landingSkyBox.clone().apply { scale = 100000f; isAlwaysRendered = true }
     private val rectangle = Rectangle(engine, 0f,-400f, 0f, 500f).apply { rotationX = 270f }
     private var sequence: Sequence = Sequence.PART_1
     private enum class Sequence { PART_1, PART_2, PART_3, PART_4 }
@@ -42,24 +44,28 @@ class LandingScene(val engine: Engine): Scene() {
 
     override fun draw() {
         shapeArray.forEach { shape ->
-            engine.matrixUtil.updateMatrix(shape)
+            if (shape.isOnScreen()) {
+                engine.matrixUtil.updateMatrix(shape)
 
-            gles20.glEnable(GLES20.GL_BLEND)
-            gles20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA)
+                gles20.glEnable(GLES20.GL_BLEND)
+                gles20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA)
 
-            shape.draw()
+                shape.draw()
 
-            gles20.glDisable(GLES20.GL_BLEND)
+                gles20.glDisable(GLES20.GL_BLEND)
 
-            engine.matrixUtil.restoreMatrix()
+                engine.matrixUtil.restoreMatrix()
+            }
         }
 
         waterTileArray.forEach { shape ->
-            engine.matrixUtil.updateMatrix(shape)
+            if (shape.isOnScreen()) {
+                engine.matrixUtil.updateMatrix(shape)
 
-            shape.draw()
+                shape.draw()
 
-            engine.matrixUtil.restoreMatrix()
+                engine.matrixUtil.restoreMatrix()
+            }
         }
     }
 
@@ -170,11 +176,11 @@ class LandingScene(val engine: Engine): Scene() {
     private fun lookAtShipAndMoveBehind() {
         val lookAtX = ship.x
         val lookAtY = ship.y
-            val lookAtZ = ship.z
+        val lookAtZ = ship.z
 
         when (ship.x) {
             in 0f..50000f -> {
-               // Slowly move towards ship
+                // Slowly move towards ship
                 val targetX = ship.x + 800f
                 val targetY = ship.y + 200f
                 val targetZ = ship.z
@@ -222,7 +228,20 @@ class LandingScene(val engine: Engine): Scene() {
             0.0f
         )
 
-        engine.camera.setEye(eyeX, eyeY, eyeZ)
+        // This is a hack so the frustum culler renders water that is slightly behind the eye
+        val directionX = lookAtX - eyeX
+        val directionY = lookAtY - eyeY
+        val directionZ = lookAtZ - eyeZ
+
+        val length = sqrt((directionX * directionX + directionY * directionY + directionZ * directionZ).toDouble()).toFloat()
+        val normalizedDirX = directionX / length
+        val normalizedDirY = directionY / length
+        val normalizedDirZ = directionZ / length
+        val modifiedEyeX = eyeX - normalizedDirX * Constants.DISTANCE_THRESHOLD
+        val modifiedEyeY = eyeY - normalizedDirY * Constants.DISTANCE_THRESHOLD
+        val modifiedEyeZ = eyeZ - normalizedDirZ * Constants.DISTANCE_THRESHOLD
+
+        engine.camera.setEye(modifiedEyeX, modifiedEyeY, modifiedEyeZ)
         engine.camera.setLook(lookAtX, lookAtY, lookAtZ)
     }
 
@@ -236,13 +255,21 @@ class LandingScene(val engine: Engine): Scene() {
             cameraAngle -= 2 * Math.PI.toFloat()
         }
 
-        val eyeX = ship.x + 1000f
-        val eyeY = ship.y + radius * sin(cameraAngle) * 0.3f + 200f
-        val eyeZ = ship.z + radius * sin(cameraAngle)
+        var eyeX = ship.x + 1000f
+        var eyeY = ship.y + radius * sin(cameraAngle) * 0.3f + 200f
+        var eyeZ = ship.z + radius * sin(cameraAngle)
 
         val lookAtX = ship.x
         val lookAtY = ship.y
         val lookAtZ = ship.z
+
+        val targetX = ship.x + 4500f
+        val targetY = ship.y + 150f
+        val targetZ = ship.z - 300f
+
+        eyeX += (targetX - eyeX) * 0.01f
+        eyeY += (targetY - eyeY) * 0.01f
+        eyeZ += (targetZ - eyeZ) * 0.01f
 
         Matrix4f.setLookAt(
             engine.viewMatrix,
@@ -257,15 +284,28 @@ class LandingScene(val engine: Engine): Scene() {
             0.0f,
         )
 
-        engine.camera.setEye(eyeX, eyeY, eyeZ)
+        // This is a hack so the frustum culler renders water that is slightly behind the eye
+        val directionX = lookAtX - eyeX
+        val directionY = lookAtY - eyeY
+        val directionZ = lookAtZ - eyeZ
+
+        val length = sqrt((directionX * directionX + directionY * directionY + directionZ * directionZ).toDouble()).toFloat()
+        val normalizedDirX = directionX / length
+        val normalizedDirY = directionY / length
+        val normalizedDirZ = directionZ / length
+        val modifiedEyeX = eyeX - normalizedDirX * Constants.DISTANCE_THRESHOLD
+        val modifiedEyeY = eyeY - normalizedDirY * Constants.DISTANCE_THRESHOLD
+        val modifiedEyeZ = eyeZ - normalizedDirZ * Constants.DISTANCE_THRESHOLD
+
+        engine.camera.setEye(modifiedEyeX, modifiedEyeY, modifiedEyeZ)
         engine.camera.setLook(lookAtX, lookAtY, lookAtZ)
     }
 
     private var lightPosY = 0f
     override fun updateLogic() {
-        skyBox.x = engine.camera.lookX
-        skyBox.y = engine.camera.lookY + 2000f
-        skyBox.z = engine.camera.lookZ
+        skyBox.x = engine.camera.eyeX
+        skyBox.y = engine.camera.eyeY + 2000f
+        skyBox.z = engine.camera.eyeZ
 
         rectangle.x = engine.camera.eyeX
         rectangle.z = engine.camera.eyeZ
@@ -444,7 +484,6 @@ class LandingScene(val engine: Engine): Scene() {
                     ship.z -= sin(radians) * engine.speedMultiplier * 25f
                 } else if (ship.rotationY < -90f) {
                     if (ship.z < -1000f) {
-                        println(ship.z )
                         ship.z += 12.5f * engine.speedMultiplier
                     } else {
                         // Ending the scene
